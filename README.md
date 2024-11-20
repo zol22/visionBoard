@@ -12,7 +12,6 @@ A dynamic and interactive web application designed to help users create their vi
 ## Technologies Used:
 - **React.js**: Used for building the user interface and managing state with hooks.
 - **Tailwind CSS**: For responsive, utility-first styling to make the app visually appealing and mobile-friendly.
-- **Font Awesome**: For integrating icons like heart to make the design more expressive.
 - **JavaScript (ES6)**: To add interactivity and logic to the app, such as image selection and pop-up interactions.
 - **React FontAwesome**: To render and manage Font Awesome icons in the React app.
 
