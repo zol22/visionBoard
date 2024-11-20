@@ -36,9 +36,9 @@ const PopUp = (props) => {
             const response = await axios.get(
                 `https://api.unsplash.com/search/photos`,
                 {
-                    params: { query: searchQuery, per_page: 12 },
+                    params: { query: searchQuery, per_page: 15 },
                     headers: {
-                        Authorization: "Client-ID ",
+                        Authorization: "Client-ID 999Z-NGPpt8Vx6ZlgbVaMpIleKyFKlNCXlDY0ZDsaBc",
                     },
                 }
             );

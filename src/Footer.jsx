@@ -7,7 +7,7 @@ function Footer(){
                 <a href="https://www.linkedin.com/in/solangeormeno22/" className="text-neutral-300 hover:text-neutral-100">LinkedIn</a>
                 <a href="https://github.com/zol22" className="text-neutral-300 hover:text-neutral-100">GitHub</a>
             </div>
-                <p className="text-md text-neutral-300">Designed to inspire your vision and goals for a new year. Made by Sol </p>
+                <p className="text-md text-neutral-300">Designed to inspire your vision and goals for a new year. Made by Sol ❤️ </p>
                 </div>        
                 
             </footer>
