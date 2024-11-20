@@ -1,103 +1,137 @@
 import { useState } from "react";
 import axios from 'axios';
-import Unplash from "./Unplash";
-
-
+import Unsplash from "./Unsplash";
 
 const PopUp = (props) => {
+    const [unsplashContainer, setUnsplashContainer] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
 
-    const [unplashContainer, setUnplashContainer] = useState(false) 
-    
-    const handleOnChange = (e) => {
-        const target = e.target;
-        const files = target.files;
-
-        /* Ensure the user has selected a valid file. */
+    const handleFileChange = (e) => {
+        const files = e.target.files;
         if (files && files.length > 0) {
-
-            /* Build an object representing the new image */
             const newImage = {
-                id: props.index, 
-                src: URL.createObjectURL(files[0]), // Create a temporary URL for the file
-              };
+                id: props.index,
+                src: URL.createObjectURL(files[0]),
+            };
 
-            /* Update imageGrid state with the new image */
-              props.setImage((prevImage) => {
-
-                /*  Check if there’s already an image for this topic (props.index) in the imageGrid state. 
-                    Example:
-                    Let's say prevImage = [{ id: 1, src: 'blob:http://localhost/xyz123' }].
-                    The function checks if any image has id === 2 (the current topic). If yes, it returns the index; otherwise, -1.
-                */
+            props.setImage((prevImage) => {
                 const existingImageIndex = prevImage.findIndex(
-                  (image) => image.id === props.index
+                    (image) => image.id === props.index
                 );
-                console.log(existingImageIndex)
-
-                /* 
-                Case 1: The image already exists.
-                Example:
-                prevImage = [{ id: 2, src: 'blob:http://localhost/old123' }].
-                The existingImageIndex is 0.
-                The code creates a copy of prevImage and replaces the entry at index 0 with newImage.
-                Result: The updated imageGrid is:
-                updatedImages = [{ id: 2, src: 'blob:http://localhost/abc123' }];
-                Case 2: The image doesn’t exist.
-                Example:
-                prevImage = [{ id: 1, src: 'blob:http://localhost/xyz123' }].
-                existingImageIndex = -1 (no image for topic 2).
-                The code appends newImage to prevImage.
-                Result: The updated imageGrid is:
-                updatedImages = [
-                    { id: 1, src: 'blob:http://localhost/xyz123' },
-                    { id: 2, src: 'blob:http://localhost/abc123' }
-];*/
                 if (existingImageIndex !== -1) {
-                  // Update the existing image after selecting one time the 'Select Files' button
-                  const updatedImages = [...prevImage];
-                  updatedImages[existingImageIndex] = newImage;
-                  return updatedImages;
+                    const updatedImages = [...prevImage];
+                    updatedImages[existingImageIndex] = newImage;
+                    return updatedImages;
                 } else {
-                  // Add a new image, first time selecting images in 'Select Files' button
-                  return [...prevImage, newImage];
+                    return [...prevImage, newImage];
                 }
-              });
-                
-                // Close the popup automatically after selecting a file (optional)
-                props.setTrigger(false);
+            });
+            props.setTrigger(false);
+        }
+    };
 
-        }   
-    }
+    const fetchAPI = async () => {
+        try {
+            const response = await axios.get(
+                `https://api.unsplash.com/search/photos`,
+                {
+                    params: { query: searchQuery, per_page: 12 },
+                    headers: {
+                        Authorization: "Client-ID ",
+                    },
+                }
+            );
+            setSearchResults(response.data.results);
+            setUnsplashContainer(true);
+        } catch (error) {
+            console.error("Error fetching from Unsplash: ", error);
+        }
+    };
 
-    const fetchAPI = async() => {
-        setUnplashContainer(!unplashContainer);
-        const response = await axios.get('https://api.unsplash.com/photos/?client_id=999Z-NGPpt8Vx6ZlgbVaMpIleKyFKlNCXlDY0ZDsaBc');
-        console.log(response.data);
-        const data = await response.data
+    const handleImageSelect = (image) => {
+        const newImage = {
+            id: props.index,
+            src: image.urls.small,
+        };
 
-    }
+        props.setImage((prevImage) => {
+            const existingImageIndex = prevImage.findIndex(
+                (img) => img.id === props.index
+            );
+            if (existingImageIndex !== -1) {
+                const updatedImages = [...prevImage];
+                updatedImages[existingImageIndex] = newImage;
+                return updatedImages;
+            } else {
+                return [...prevImage, newImage];
+            }
+        });
+        setUnsplashContainer(false);
+        props.setTrigger(false);
 
-    return (props.trigger) ? (
-        <div className="fixed w-full h-full flex flex-col items-center justify-center left-0 top-0 bg-slate-500 moda-container">
-            <div className="bg-white rounded-s p-2 w-3/4 modal">
-                <div className="flex justify-end text-base modal-header">
-                    <button className='rounded-full bg-neutral-800 py-2 px-3.5 text-sm capitalize text-white' onClick={()=> props.setTrigger(false)}>&times;</button>
+    };
+
+    return props.trigger ? (
+        <div 
+            className="fixed w-full h-full flex flex-col items-center justify-center left-0 top-0 bg-black bg-opacity-70 overflow-hidden"
+            onClick={() => props.setTrigger(false)} // Close on background click
+        >
+            {/* Popup Container */}
+            <div 
+                className="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-lg z-10"
+                onClick={(e) => e.stopPropagation()} // Prevent close on modal click
+                >
+                <div className="flex justify-end">
+                    <button
+                        className="rounded-full bg-neutral-800 py-2 px-3.5 text-sm text-white"
+                        onClick={() => props.setTrigger(false)}
+                    >
+                        &times;
+                    </button>
                 </div>
-                
-                <div className="mb-10 modal-content">
-                    <h1 className="flex items-center justify-center p-2">Hi there, this is my title</h1>
-                    <p className="flex items-center justify-center p-2 m-3">This is more description to keep in mind</p>
-                    <div className="flex justify-evenly">
-                        <input onChange={handleOnChange} accept='image/*' type='file' className=" bg-neutral-800 p-3 rounded-s text-sm text-white"/>
-                        <button onClick={fetchAPI} className=" bg-neutral-800 p-3 rounded-s text-sm text-white">Search on Unplash</button>
-                        
-                    </div>                    
+                <h1 className="text-center font-bold text-lg mb-4">
+                    Add or Search for an Image
+                </h1>
+                <p className="text-center text-sm mb-4">
+                    Upload from your computer or search online
+                </p>
+                <div className="flex flex-col gap-4">
+                    <input
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        type="file"
+                        className="bg-neutral-800 text-white rounded py-2 px-3 cursor-pointer"
+                    />
+                    <div className="flex">
+                        <input
+                            type="text"
+                            placeholder="Search Unsplash"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="p-2 border rounded w-full"
+                        />
+                        <button
+                            onClick={fetchAPI}
+                            className="bg-neutral-800 text-white rounded py-2 px-3 ml-2"
+                        >
+                            Search
+                        </button>
+                    </div>
                 </div>
             </div>
-            { unplashContainer ? <Unplash /> : null}
-        </div>
-    ): null
 
-}
+            {/* Unsplash Container */}
+            {unsplashContainer && (
+                <div className="bg-white rounded-lg shadow-lg mt-4 w-3/4 max-w-4xl overflow-y-auto h-96 p-6">
+                    <Unsplash
+                        searchResults={searchResults}
+                        handleImageSelect={handleImageSelect}
+                    />
+                </div>
+            )}
+        </div>
+    ) : null;
+};
 
 export default PopUp;
