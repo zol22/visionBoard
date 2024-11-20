@@ -5,32 +5,32 @@ import { useState } from 'react'
 
 const MasonryGrid = () => {
 
-    const [idArrays, setIdArrays] = useState([]);
+    //const [idArrays, setIdArrays] = useState([]);
     const [popUpOpen, setPopupOpen] = useState(false);
-    const [imageGrid, setImageGrid] = useState([
-        {
-            id : '',
-            src:'',
-            change: 'No'
-        }
-]);
+    const [imageGrid, setImageGrid] = useState([]);
+    const [currentButtonIndex, setCurrentButtonIndex] = useState(null);
 
-
-    const [currentButtonIndex, setCurrentButtonIndex] = useState();
 
     const setState = (index) => {
+        //console.log(index)
         setPopupOpen(!popUpOpen);
         setCurrentButtonIndex(index);
-        {setIdArrays([ ...idArrays, index])}
-        console.log(index)
+
+        //if (!idArrays.includes(index)) {
+          //  setIdArrays([...idArrays, index]);
+          //}
+        console.log('Selected Index:', index);
 
     }
-    const getThesource = (images,index) => {
-      return ((images.filter((image) => image.id === index)).map(image => image.src));
+    const getThesource = (index) => {
+      //return ((images.filter((image) => image.id === index)).map(image => image.src));
+      const selectedImage = imageGrid.find((image) => image.id === index);
+      console.log(imageGrid)
+      return selectedImage ? selectedImage.src : '';
    
     }
     
-    console.log(idArrays)
+    //console.log(idArrays)
 
     return (
         <div className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4'>
@@ -39,9 +39,9 @@ const MasonryGrid = () => {
                     <div className='relative [transform-style:preserve-3d] transition-all group-hover:[transform:rotateY(180deg)] duration-500 '>
                         <div className='mb-4'>
 
-                        {index === currentButtonIndex ? (
+                        {getThesource(index) ? (
                             <div>
-                                <img  src={getThesource(imageGrid,index)}></img>
+                                <img  src={getThesource(index)} className='w-full object-cover'></img>
                             </div>
                         ): <>                        
                             <div className='mb-4'>

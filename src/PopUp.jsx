@@ -14,8 +14,31 @@ const PopUp = (props) => {
 
         /* If you have an object with 2 properties with the same name, you end up using the later one*/
         if (files && files.length > 0) {
-    
-               props.setImage(prevImage => [
+
+            const newImage = {
+                id: props.index, // associate with the current topic index
+                src: URL.createObjectURL(files[0]),
+              };
+
+            // Update imageGrid state with the new image
+              props.setImage((prevImage) => {
+                // Check if an image for this index already exists
+                const existingImageIndex = prevImage.findIndex(
+                  (image) => image.id === props.index
+                );
+                if (existingImageIndex !== -1) {
+                  // Update the existing image
+                  const updatedImages = [...prevImage];
+                  updatedImages[existingImageIndex] = newImage;
+                  return updatedImages;
+                } else {
+                  // Add a new image
+                  return [...prevImage, newImage];
+                }
+              });
+
+
+               /*props.setImage(prevImage => [
                 ... prevImage,
                 {
                         id: props.index,
@@ -23,9 +46,12 @@ const PopUp = (props) => {
                         change: 'Yes'
             
                 }
-               ])
+               ])*/
+                
+                // Close the popup automatically after selecting a file (optional)
+                props.setTrigger(false);
+
         }   
-        //console.log(props.image)
     }
 
     const fetchAPI = async() => {
