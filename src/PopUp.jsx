@@ -38,7 +38,7 @@ const PopUp = (props) => {
                 {
                     params: { query: searchQuery, per_page: 12 },
                     headers: {
-                        Authorization: "Client-ID 999Z-NGPpt8Vx6ZlgbVaMpIleKyFKlNCXlDY0ZDsaBc",
+                        Authorization: "Client-ID ",
                     },
                 }
             );
