@@ -5,32 +5,23 @@ import { useState } from 'react'
 
 const MasonryGrid = () => {
 
-    //const [idArrays, setIdArrays] = useState([]);
     const [popUpOpen, setPopupOpen] = useState(false);
     const [imageGrid, setImageGrid] = useState([]);
     const [currentButtonIndex, setCurrentButtonIndex] = useState(null);
 
 
     const setState = (index) => {
-        //console.log(index)
         setPopupOpen(!popUpOpen);
         setCurrentButtonIndex(index);
-
-        //if (!idArrays.includes(index)) {
-          //  setIdArrays([...idArrays, index]);
-          //}
-        console.log('Selected Index:', index);
-
     }
+
     const getThesource = (index) => {
-      //return ((images.filter((image) => image.id === index)).map(image => image.src));
+    // Find the selected image in the imageGrid
       const selectedImage = imageGrid.find((image) => image.id === index);
       console.log(imageGrid)
       return selectedImage ? selectedImage.src : '';
-   
     }
     
-    //console.log(idArrays)
 
     return (
         <div className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4'>
@@ -38,7 +29,14 @@ const MasonryGrid = () => {
                 <div key={index} className='group cursor-pointer'>
                     <div className='relative [transform-style:preserve-3d] transition-all group-hover:[transform:rotateY(180deg)] duration-500 '>
                         <div className='mb-4'>
-
+                        {/* Explanation:
+                            If getThesource(index) returns an image source (src):
+                                It means the user has selected or updated an image for this topic.
+                                The <img> tag will display the updated image (from imageGrid).
+                            If getThesource(index) returns nothing (falsy):
+                                It means no image has been selected for this topic.
+                                The <img> tag will display the default image (topic.src from the topics array).
+                            ImageGrid is updated on PopUp component */}
                         {getThesource(index) ? (
                             <div>
                                 <img  src={getThesource(index)} className='w-full object-cover'></img>

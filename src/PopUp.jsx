@@ -12,41 +12,56 @@ const PopUp = (props) => {
         const target = e.target;
         const files = target.files;
 
-        /* If you have an object with 2 properties with the same name, you end up using the later one*/
+        /* Ensure the user has selected a valid file. */
         if (files && files.length > 0) {
 
+            /* Build an object representing the new image */
             const newImage = {
-                id: props.index, // associate with the current topic index
-                src: URL.createObjectURL(files[0]),
+                id: props.index, 
+                src: URL.createObjectURL(files[0]), // Create a temporary URL for the file
               };
 
-            // Update imageGrid state with the new image
+            /* Update imageGrid state with the new image */
               props.setImage((prevImage) => {
-                // Check if an image for this index already exists
+
+                /*  Check if there’s already an image for this topic (props.index) in the imageGrid state. 
+                    Example:
+                    Let's say prevImage = [{ id: 1, src: 'blob:http://localhost/xyz123' }].
+                    The function checks if any image has id === 2 (the current topic). If yes, it returns the index; otherwise, -1.
+                */
                 const existingImageIndex = prevImage.findIndex(
                   (image) => image.id === props.index
                 );
+                console.log(existingImageIndex)
+
+                /* 
+                Case 1: The image already exists.
+                Example:
+                prevImage = [{ id: 2, src: 'blob:http://localhost/old123' }].
+                The existingImageIndex is 0.
+                The code creates a copy of prevImage and replaces the entry at index 0 with newImage.
+                Result: The updated imageGrid is:
+                updatedImages = [{ id: 2, src: 'blob:http://localhost/abc123' }];
+                Case 2: The image doesn’t exist.
+                Example:
+                prevImage = [{ id: 1, src: 'blob:http://localhost/xyz123' }].
+                existingImageIndex = -1 (no image for topic 2).
+                The code appends newImage to prevImage.
+                Result: The updated imageGrid is:
+                updatedImages = [
+                    { id: 1, src: 'blob:http://localhost/xyz123' },
+                    { id: 2, src: 'blob:http://localhost/abc123' }
+];*/
                 if (existingImageIndex !== -1) {
-                  // Update the existing image
+                  // Update the existing image after selecting one time the 'Select Files' button
                   const updatedImages = [...prevImage];
                   updatedImages[existingImageIndex] = newImage;
                   return updatedImages;
                 } else {
-                  // Add a new image
+                  // Add a new image, first time selecting images in 'Select Files' button
                   return [...prevImage, newImage];
                 }
               });
-
-
-               /*props.setImage(prevImage => [
-                ... prevImage,
-                {
-                        id: props.index,
-                        src: URL.createObjectURL(files[0]),
-                        change: 'Yes'
-            
-                }
-               ])*/
                 
                 // Close the popup automatically after selecting a file (optional)
                 props.setTrigger(false);
