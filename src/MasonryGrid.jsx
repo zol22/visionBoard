@@ -53,11 +53,11 @@ const MasonryGrid = () => {
                                 ImageGrid is updated on PopUp component */}
                             {getThesource(index) ? (
                                 <div>
-                                    <img  src={getThesource(index)} className='w-full object-cover'></img>
+                                    <img  src={getThesource(index)} className='w-full h-auto'></img>
                                 </div>
                             ): <>                        
                                 <div className='mb-4'>
-                                    <img src={topics.src} className='w-full object-cover'></img>
+                                    <img src={topics.src} className='w-full h-auto'></img>
                                 </div>
                             </> 
                         }
@@ -66,7 +66,7 @@ const MasonryGrid = () => {
                             <div className='absolute inset-0 flex flex-col items-center justify-center px-9 text-center bg-opacity-95 bg-black text-white backface-invisible [transform:rotateY(180deg)]'>
                                     <h1 className='text-2xl font-semibold mb-2'>{topics.title}</h1>
                                     <p className='text-md italic mb-4'>{topics.description}</p>
-                                    <button onClick={() => setState(index)} className='rounded-full bg-neutral-800 py-2 px-5 text-sm capitalize hover:bg-neutral-700 transition duration-300'>
+                                    <button onClick={() => setState(index)} className='rounded-full bg-neutral-800 py-2 px-3.5 text-sm capitalize  '>
                                         Add image
                                     </button>
                             </div>
